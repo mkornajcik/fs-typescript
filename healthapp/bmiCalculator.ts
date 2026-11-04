@@ -10,7 +10,7 @@ type Categories =
   | "Obese (Class II)"
   | "Obese (Class III)";
 
-const calculateBmi = (height: number, weight: number): Categories => {
+export const calculateBmi = (height: number, weight: number): Categories => {
   const heightMeters = height / 100;
   const bmi = weight / (heightMeters * heightMeters);
 
@@ -33,13 +33,15 @@ const calculateBmi = (height: number, weight: number): Categories => {
   }
 };
 
-try {
-  const { height, weight } = parseBmi(process.argv);
-  console.log(calculateBmi(height, weight));
-} catch (error: unknown) {
-  let errorMessage = "Something bad happened.";
-  if (error instanceof Error) {
-    errorMessage += " Error: " + error.message;
+if (process.argv[1] === import.meta.filename) {
+  try {
+    const { height, weight } = parseBmi(process.argv);
+    console.log(calculateBmi(height, weight));
+  } catch (error: unknown) {
+    let errorMessage = "Something bad happened.";
+    if (error instanceof Error) {
+      errorMessage += " Error: " + error.message;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
 }

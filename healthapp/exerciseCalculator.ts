@@ -47,7 +47,7 @@ const getRating = (target: number, average: number): RatingCombined => {
   return { rating: 1, ratingDescription: "The target was missed by a lot" };
 };
 
-const calculateExercises = (exerciseHours: number[], target: number): ExercisesResult => {
+export const calculateExercises = (exerciseHours: number[], target: number): ExercisesResult => {
   const periodLength = exerciseHours.length;
   const trainingDays = getTrainingDays(exerciseHours);
   const average = getAverageHours(exerciseHours);
@@ -57,13 +57,15 @@ const calculateExercises = (exerciseHours: number[], target: number): ExercisesR
   return { periodLength, trainingDays, target, average, success, rating, ratingDescription };
 };
 
-try {
-  const { target, exerciseHours } = parseExercise(process.argv);
-  console.log(calculateExercises(exerciseHours, target));
-} catch (error: unknown) {
-  let errorMessage = "Something bad happened.";
-  if (error instanceof Error) {
-    errorMessage += " Error: " + error.message;
+if (process.argv[1] === import.meta.filename) {
+  try {
+    const { target, exerciseHours } = parseExercise(process.argv);
+    console.log(calculateExercises(exerciseHours, target));
+  } catch (error: unknown) {
+    let errorMessage = "Something bad happened.";
+    if (error instanceof Error) {
+      errorMessage += " Error: " + error.message;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
 }
