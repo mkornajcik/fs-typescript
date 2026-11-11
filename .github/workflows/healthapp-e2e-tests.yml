@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -36,9 +36,12 @@ jobs:
         working-directory: ./healthapp-tests
         run: npm install
 
-      - name: Install Playwright browsers
-        working-directory: ./healthapp-tests
-        run: npx playwright install --with-deps chromium
+      # `--with-deps` made the job depend on the Ubuntu
+      # mirrors, which failed during Canonical's 11 Nov 2026 DNS outage.
+      # https://github.com/actions/runner-images/issues/15296
+      # - name: Install Playwright browsers
+      #   working-directory: ./healthapp-tests
+      #   run: npx playwright install --with-deps chromium
 
       - name: Run e2e tests
         working-directory: ./healthapp-tests
