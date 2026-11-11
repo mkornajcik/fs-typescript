@@ -1,7 +1,7 @@
 import express, { type Response, type Request } from "express";
 import patientsService from "../services/patientsService.ts";
-import { type Patient, type NewPatientEntry, type NonSensitivePatient } from "../types.ts";
-import { newPatientParser, errorMiddleware } from "../middleware.ts";
+import { type Patient, type NewPatientEntry, type NewEntry, type NonSensitivePatient } from "../types.ts";
+import { newPatientParser, errorMiddleware, newEntryParser } from "../middleware.ts";
 
 const router = express.Router();
 
@@ -22,6 +22,20 @@ router.get("/:id", (req, res: Response<Patient | { error: string }>) => {
   }
   return res.json(data);
 });
+
+router.post(
+  "/:id/entries",
+  newEntryParser,
+  (req: Request<{ id: string }, unknown, NewEntry>, res: Response<Patient | { error: string }>) => {
+    const updatedPatient = patientsService.addEntry(req.params.id, req.body);
+
+    if (!updatedPatient) {
+      return res.status(404).send({ error: "Patient not found" });
+    }
+
+    return res.json(updatedPatient);
+  },
+);
 
 router.use(errorMiddleware);
 
